@@ -1,0 +1,33 @@
+PHASE 6 — Audit trail, backtesting, and production hardening.
+
+The final phase: make the system trustworthy and provably correct. Walk me through:
+
+1. Immutable audit trail design:
+   - Every VaR number must be exactly reproducible from stored state. What do I need to store?
+   - Design the VaR run record schema for TimescaleDB: what columns, what data types, what indexes?
+   - How do I store random seeds when using parallel simulation with multiple RNG streams?
+   - What is an append-only table and why should our audit log be one? How do I enforce this at the DB level?
+
+2. Backtesting framework:
+   - Explain the Kupiec test (POF test) from first principles. What null hypothesis is it testing?
+   - What is the Basel traffic light system? What happens to the bank if we get more than 10 VaR breaches in 250 days?
+   - Design the backtesting pipeline: how do I compare yesterday's predicted VaR vs today's actual P&L at scale over 3 years of history?
+   - What does a good backtesting dashboard show a risk manager?
+
+3. Model validation concerns:
+   - How do I detect if the PCA model is becoming stale (the real correlation structure has shifted)?
+   - Design a daily correlation matrix stability check. What metric do I compute? What threshold triggers a recalibration alert?
+
+4. Production failure modes:
+   - Market data feed is 20 minutes late. The market opens in 10 minutes. What does the system do?
+   - The Kafka consumer falls 10,000 messages behind. How do I detect this and what is the recovery path?
+   - One of 8 simulation worker threads dies mid-run. Does the run fail, produce partial results, or restart automatically?
+   - Design the runbook entry for each of these failure scenarios.
+
+5. Final architecture review:
+   - Draw the full system again (text diagram), now including all components from all phases.
+   - Where are the single points of failure?
+   - What would you add if this were a real production system at a mid-size commodity trading firm?
+   - What have we simplified or omitted that a real system would need?
+
+End with a question: what part of this system do you think I understood least well, and what should I revisit?

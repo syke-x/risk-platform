@@ -1,0 +1,19 @@
+PHASE 1 — System architecture and data model design.
+
+Walk me through designing the full system architecture for the crude oil VaR platform. Cover:
+
+1. Draw (in text/ASCII) the full component diagram: what are the major subsystems, how do they connect, what protocols/mechanisms sit between them.
+
+2. For each subsystem boundary, explain: why is this a separate component and not part of another? What would break if we merged them?
+
+3. Design the core domain model in Java. What are the key entities?
+   - Position (what fields does a crude oil position need beyond just quantity + price?)
+   - Instrument (how do we represent Brent Crude futures vs physical Basrah Light cargo?)
+   - ForwardCurve (how do we store 60 monthly price points efficiently?)
+   - SimulationResult (what does one Monte Carlo trial produce?)
+   
+4. For the ForwardCurve representation specifically: walk me through the tradeoff between storing it as double[] vs a Map vs an Apache Arrow vector. What does each cost in terms of memory layout and cache performance?
+
+5. Explain the VaR calculation pipeline as a sequence of stages. What is the input and output of each stage?
+
+After each section, check my understanding before moving to the next.

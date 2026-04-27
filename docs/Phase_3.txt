@@ -1,0 +1,30 @@
+PHASE 3 — Crude oil forward curve PCA model.
+
+This is the mathematical heart of the system. Walk me through:
+
+1. Why we can't just simulate 60 independent monthly prices. What is the empirical structure of crude oil forward curve movements? What do the three principal components (level, slope, curvature) look like and what do they represent economically?
+
+2. Explain PCA from first principles:
+   - What is an eigenvector in this context (I know linear algebra basics)?
+   - How do we go from a historical matrix of daily curve changes to principal components?
+   - How do we decide how many components to keep? What does "explained variance" mean?
+
+3. Walk through the simulation loop in pseudocode:
+   - Sample 3 standard normal variables (one per PC factor)
+   - Scale by factor volatilities
+   - Reconstruct the full 60-point forward curve change
+   - Apply to today's curve to get the simulated curve
+   What are the units at each step?
+
+4. Jump-diffusion for geopolitical shocks:
+   - Explain the Merton jump-diffusion model. What does adding a Poisson process mean physically?
+   - What parameters do I need to estimate: jump intensity (lambda), jump size mean and variance?
+   - How do I add jumps to the PCA simulation? Where in the pseudocode does it slot in?
+   - How do I calibrate lambda from historical crude oil data? (e.g. count moves > 3 sigma per year)
+
+5. Basis risk model:
+   - My client trades Basrah Light but hedges with Brent. The basis (Basrah Light vs Brent spread) is a separate risk factor.
+   - How do I model the basis spread? What distribution fits historical basis data?
+   - How do I correlate basis movements with the Brent curve PCA factors?
+
+6. Where does this model live in the Java codebase? Design the class interface for CurveSimulator — what are its inputs, outputs, and dependencies?

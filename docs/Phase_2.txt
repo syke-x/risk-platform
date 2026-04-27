@@ -1,0 +1,25 @@
+PHASE 2 — High-performance random number generation in Java.
+
+I need to generate millions of random samples per VaR run. Walk me through:
+
+1. Why java.util.Random is completely unsuitable here. What are its specific failure modes (thread contention, period length, statistical quality)?
+
+2. Introduce me to SplittableRandom and why it exists. What is the "split" operation and why does it matter for parallel Monte Carlo?
+
+3. Explain the Mersenne Twister vs PCG (Permuted Congruential Generator) vs Xoshiro256. Which should I use and why? What does "period length" mean and why do I care for 500k simulations?
+
+4. For generating correlated random samples (we need 60 correlated curve factors per simulation):
+   - Explain Cholesky decomposition from first principles — what problem does it solve?
+   - Walk me through the algorithm step by step in pseudocode
+   - What is the computational cost? (O(n^3) for decomposition, O(n^2) per simulation)
+   - What happens when the correlation matrix is not positive semi-definite? How do I detect this? What do I do?
+
+5. Memory layout question: if I'm running 500,000 simulations each producing 60 correlated factors, should I store this as:
+   - double[500000][60] (simulation-major order)
+   - double[60][500000] (factor-major order)
+   - An Apache Arrow table
+   Walk me through the cache implications of each layout for the next stage (the pricing stage reads factor-by-factor).
+
+6. How do I partition the 500,000 simulations across Java 21 virtual threads correctly, ensuring each thread has its own RNG stream with no overlap?
+
+Verify my understanding after each concept.

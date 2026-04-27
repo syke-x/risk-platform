@@ -1,0 +1,29 @@
+PHASE 5 — Real-time position ingestion pipeline.
+
+The system must update VaR as new trades arrive during the trading day. Walk me through:
+
+1. Kafka consumer design for position updates:
+   - What is the partition key strategy for our position topic? Should we key by instrument, trader, or book?
+   - Explain exactly-once semantics in Kafka. Do we need it here? What is the cost of enabling it?
+   - How do we handle out-of-order position updates (a trade amendment arrives before the original trade)?
+
+2. Chronicle Map for off-heap position storage:
+   - Explain what off-heap memory means and why it matters for a GC-sensitive latency-critical system.
+   - What is Chronicle Map and how does it work differently from a Java HashMap?
+   - What is the serialisation format for our Position objects? Why avoid Java serialisation?
+   - What are the failure modes of Chronicle Map? What happens if the JVM crashes mid-write?
+
+3. Incremental VaR recalculation:
+   - Running full Monte Carlo on every new trade is too slow. What is the delta-based approach?
+   - Explain position-level VaR sensitivity (how much does total VaR change if I add 1000 barrels to position X?). How is this computed from the existing simulation output?
+   - When do we need to trigger a full recalculation vs use the delta approximation? What is the staleness threshold?
+
+4. The fast path / slow path architecture:
+   - Design both paths in pseudocode: the fast parametric path (runs in milliseconds) and the full Monte Carlo path (runs every 15 minutes).
+   - How do we keep them numerically consistent enough that risk managers trust both numbers?
+   - What is the reconciliation process when the two paths diverge?
+
+5. SLA monitoring:
+   - I need to alert if the 6 AM full VaR run will miss the 6:30 AM market-open deadline.
+   - Design a progress estimator: given that we are 40% through simulations at T+4 minutes, will we finish in time?
+   - What Micrometer metrics do I expose? What are the alert thresholds?
